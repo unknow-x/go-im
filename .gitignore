@@ -1,0 +1,10 @@
+.env
+tmp
+.idea
+.DS_Store
+.github
+main
+gin.log
+.tellme.yaml
+tellme
+imd

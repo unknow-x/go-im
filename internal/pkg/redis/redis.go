@@ -1,0 +1,39 @@
+// Package redis
+/**
+  @author:kk
+  @data:2021/6/18
+  @note
+**/
+package redis
+
+import (
+	"github.com/go-redis/redis"
+	"im_app/pkg/config"
+	"log"
+	"time"
+)
+
+var DB *redis.Client
+
+// InitClient redis 连接
+func InitClient() (err error) {
+
+	DB = redis.NewClient(&redis.Options{
+		Network:      "tcp",
+		Addr:         config.GetString("cache.redis.addr") + ":" + config.GetString("cache.redis.port"),
+		Password:     config.GetString("cache.redis.password"),
+		DB:           config.GetInt("cache.redis.db", 0),
+		PoolSize:     15, //连接池 默认为4倍cpu数
+		MinIdleConns: 10, //在启动阶段创建指定数量的Idle连接，并长期维持idle状态的连接数不少于指定数量
+		DialTimeout:  5 * time.Second,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		PoolTimeout:  5 * time.Second,
+	})
+	_, err = DB.Ping().Result()
+
+	if err != nil {
+		log.Println(err)
+	}
+	return nil
+}

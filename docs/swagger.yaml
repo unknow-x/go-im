@@ -1,0 +1,777 @@
+basePath: /api
+host: 114.132.40.112:9502
+info:
+  contact:
+    email: pltrueover@gmail.com
+    name: go-core
+    url: https://im.pltrue.top
+  description: go-im 服务端
+  license:
+    name: MIT
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: go-im  接口文档
+  version: "2.0"
+paths:
+  /AddSession:
+    post:
+      description: 添加会话信息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id或者群聊id
+        in: formData
+        name: f_id
+        required: true
+        type: string
+      - description: 会话类型 1.单聊 2.群聊
+        in: formData
+        name: channel_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 添加会话信息
+      tags:
+      - 添加会话信息
+  /ByFriendRequest:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 同意好友请求接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 请求描述
+        in: formData
+        name: information
+        required: true
+        type: string
+      - description: 请求记录id
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: 1.同意 0 拒绝
+        in: formData
+        name: status
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 同意好友请求接口
+      tags:
+      - 同意好友请求接口
+  /CreateGroup:
+    post:
+      description: 创建群聊
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊名称
+        in: formData
+        name: group_name
+        required: true
+        type: string
+      - description: 群聊用户
+        in: formData
+        name: user_id
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 创建群聊
+      tags:
+      - 创建群聊
+  /DelSession:
+    post:
+      description: 删除会话信息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id或者群聊id
+        in: formData
+        name: f_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除会话信息
+      tags:
+      - 删除会话信息
+  /FriendList:
+    get:
+      description: 获取好友列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取好友列表
+      tags:
+      - 获取好友列表
+  /FriendPlacedTop:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 好友置顶功能接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: 状态 1.置顶 0.取消置顶
+        in: formData
+        name: status
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 好友置顶功能接口
+      tags:
+      - 好友置顶功能接口
+  /GetFriendForRecord:
+    get:
+      description: 获取好友申请记录
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取好友申请记录
+      tags:
+      - 获取好友申请记录
+  /GetGroupDetails:
+    get:
+      description: 获取群聊详情
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: query
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取群聊详情
+      tags:
+      - 获取群聊详情
+  /GetGroupList:
+    get:
+      description: 获取群聊列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取群聊列表
+      tags:
+      - 获取群聊列表
+  /GetGroupMessageList:
+    get:
+      description: 获取群聊历史消息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: query
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取群聊历史消息
+      tags:
+      - 获取群聊历史消息
+  /GetSessionList:
+    get:
+      description: 获取会话列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取会话列表
+      tags:
+      - 获取会话列表
+  /InformationHistory:
+    get:
+      description: 获取用户历史消息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户id
+        in: query
+        name: to_id
+        required: true
+        type: string
+      - description: 分页条数
+        in: query
+        name: pageSize
+        type: string
+      - description: 第几页
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取用户历史消息
+      tags:
+      - 获取用户历史消息
+  /JoinGroup:
+    post:
+      description: 添加用户到指定群聊
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: formData
+        name: group_id
+        required: true
+        type: string
+      - description: 用户id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 添加用户到指定群聊
+      tags:
+      - 添加用户到指定群聊
+  /ReadMessage:
+    get:
+      description: 历史消息读取
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片上传
+        in: formData
+        name: voice
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 历史消息读取[废弃]
+      tags:
+      - 历史消息读取
+  /RemoveFriend:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 删除好友接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除好友接口
+      tags:
+      - 删除好友接口
+  /RemoveGroup:
+    post:
+      description: 删除群聊
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: formData
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除群聊
+      tags:
+      - 删除群聊
+  /RemovedUserFromGroup:
+    post:
+      description: 移除群聊用户
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: formData
+        name: group_id
+        required: true
+        type: string
+      - description: 用户id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 移除群聊用户
+      tags:
+      - 移除群聊用户
+  /SendFriendRequest:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 发送好友请求接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 请求描述
+        in: formData
+        name: information
+        required: true
+        type: string
+      - description: 用户id
+        in: formData
+        name: f_id
+        required: true
+        type: string
+      - description: 客户端类型 0.网页端登录 1.设备端登录 2.app端
+        in: formData
+        name: client_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 发送好友请求
+      tags:
+      - 发送好友请求接口
+  /SetSessionTop:
+    post:
+      description: 会话置顶
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 会话id
+        in: formData
+        name: session_id
+        required: true
+        type: string
+      - description: 0 正常 1置顶
+        in: formData
+        name: top_status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 会话置顶
+      tags:
+      - 会话置顶
+  /Update:
+    put:
+      description: 更新用户数据
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 个性签名
+        in: formData
+        name: bio
+        type: string
+      - description: 性别
+        in: formData
+        name: six
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 更新用户数据
+      tags:
+      - 更新用户数据
+  /UpdateFriendNote:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 更新好友备注接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: 备注
+        in: formData
+        name: note
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 更新好友备注接口
+      tags:
+      - 更新好友备注接口
+  /UpdatePwd:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 更新密码
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 旧密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: 新密码
+        in: formData
+        name: new_password
+        required: true
+        type: string
+      - description: 重复密码
+        in: formData
+        name: password_confirm
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 更新密码
+      tags:
+      - 更新密码
+  /UploadImg:
+    post:
+      description: 图片上传接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片上传
+        in: formData
+        name: Smfile
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 图片上传接口
+      tags:
+      - 图片上传接口
+  /UploadVoiceFile:
+    post:
+      description: 音频文件上传接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片上传
+        in: formData
+        name: voice
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 音频文件上传接口
+      tags:
+      - 音频文件上传接口
+  /UsersList:
+    get:
+      description: 根据昵称查询非好友用户列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 账号
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 根据昵称查询非好友用户列表
+      tags:
+      - 根据昵称查询非好友用户列表
+  /bindingEmail:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 绑定用户邮箱接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 邮箱
+        in: formData
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 绑定用户邮箱
+      tags:
+      - 绑定用户邮箱
+  /login:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 登录接口
+      parameters:
+      - description: 账号
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: 客户端类型 0.网页端登录 1.设备端登录
+        in: formData
+        name: client_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 这是一个登录接口
+      tags:
+      - 登录接口
+  /me:
+    post:
+      description: 获取用户信息接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取用户信息接口
+      tags:
+      - 获取用户信息接口
+  /registered:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 注册用户接口
+      parameters:
+      - description: 用户名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 邮箱
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: 确认密码
+        in: formData
+        name: password_confirm
+        required: true
+        type: string
+      - description: 验证码
+        in: formData
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 注册用户
+      tags:
+      - 注册用户
+  /seedRegisteredEmail:
+    get:
+      description: 发送注册邮箱验证码接口
+      parameters:
+      - description: 邮箱
+        in: query
+        name: email
+        type: string
+      responses:
+        "200":
+          description: ""
+      summary: 发送注册邮箱验证码
+      tags:
+      - 发送注册邮箱验证码接口
+  /userDetails:
+    get:
+      consumes:
+      - multipart/form-data
+      description: 根据id获取用户详情
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 邮箱
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 根据id获取用户详情
+      tags:
+      - 根据id获取用户详情
+swagger: "2.0"
