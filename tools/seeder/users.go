@@ -1,34 +1,32 @@
+// Package seeder
 /**
   @author:kk
   @data:2021/11/20
   @note
 **/
-package tests
+package main
 
 import (
 	"crypto/rand"
 	"fmt"
 	"im_app/config"
-	"im_app/core"
-	user2 "im_app/core/http/models/user"
+	"im_app/internal/app"
+	user2 "im_app/internal/app/http/models/user"
 	"im_app/internal/pkg/model"
 	"im_app/pkg/helpler"
 	"log"
 	"math/big"
 	"sync"
-	"testing"
 	"time"
 )
 
-func init() {
-	config.Initialize()
-}
-
 var wg sync.WaitGroup
 
-func TestSeedUsers(T *testing.T) {
+func main() {
+	config.Initialize()
+
 	//设置池
-	core.SetupPool()
+	app.SetupPool()
 	wg.Add(7)
 	go install(6205, 10000)
 	go install(10001, 20000)
@@ -38,32 +36,32 @@ func TestSeedUsers(T *testing.T) {
 	go install(50001, 60000)
 	go install(60001, 70000)
 	wg.Wait() //阻塞直到所有任务完成
-	fmt.Println("over")
 
+	fmt.Println("over")
 }
 
 func install(start int, end int) {
-	create_time := time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")
+	createTime := time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")
 
 	for i := start; i < end; i++ {
 		name := fmt.Sprintf("测试%d", i)
-		age := random1()
+		age := randomAge()
 		user := user2.Users{ID: int64(i),
 			Name:          name,
 			Avatar:        "https://cdn.learnku.com/uploads/avatars/27407_1531668878.png!/both/100x100",
 			Password:      helpler.HashAndSalt("123456"),
-			CreatedAt:     create_time,
+			CreatedAt:     createTime,
 			Sex:           1,
 			Status:        0,
 			ClientType:    1,
 			Age:           age,
-			LastLoginTime: create_time,
+			LastLoginTime: createTime,
 		}
 		model.DB.Create(&user)
 	}
 }
 
-func random1() int {
+func randomAge() int {
 	max := big.NewInt(100)
 	i, err := rand.Int(rand.Reader, max)
 	if err != nil {

@@ -3,14 +3,13 @@
   @data:2021/11/9
   @note
 **/
-package tests
+package test
 
 import (
 	"context"
 	"google.golang.org/grpc"
+	grpc2 "im_app/api/protobuf-spec/im"
 	"im_app/config"
-	grpc2 "im_app/core/ws/rpc"
-	"im_app/pkg/zaplog"
 	"log"
 	"testing"
 )
@@ -37,6 +36,6 @@ func TestGrpcClient(t *testing.T) {
 		t.Error("调用gRPC方法错误:", err)
 		return
 	}
-	zaplog.Info("服务调用成功---", resp)
+	t.Log("服务调用成功---", resp)
 	return
 }

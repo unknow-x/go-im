@@ -85,16 +85,20 @@ func pushNodeMessage(to_id int64, msg []byte) bool {
 	return boolNumber
 }
 
-// 上线消息通知
+// LaunchOnlineMsg 上线消息通知
 func (manager *ImClientManager) LaunchOnlineMsg(id int64) {
 	message, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: id, ChannelType: 3})
 	for _, conn := range manager.ImClientMap {
-		conn.Socket.WriteMessage(websocket.TextMessage, message)
+		zaplog.Info(string(message), conn)
+		//err := conn.Socket.WriteMessage(websocket.TextMessage, message)
+		//if err != nil {
+		//	return
+		//}
 	}
 	return
 }
 
-// 消息处理方法
+// PullMessageHandler 消息处理方法
 func (c *ImClient) PullMessageHandler(message []byte) {
 
 	if len(message) < 0 {

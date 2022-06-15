@@ -1,3 +1,4 @@
+// Package im
 /**
   @author:kk
   @data:2021/8/13
@@ -16,7 +17,7 @@ import (
 	"time"
 )
 
-var app_cluster_model = config.GetBool("core.app_cluster_model")
+var appClusterModel = config.GetBool("core.app_cluster_model")
 
 type IMService struct{}
 
@@ -31,9 +32,9 @@ func (*IMService) Connect(c *gin.Context) {
 	//&ws.Devices{Socket: conn}
 	client := &ws.ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
 
-	if app_cluster_model {
-		var cache cache.ServiceNode
-		cache.SetUserServiceNode(claims.ID)
+	if appClusterModel {
+		var cacheNode cache.ServiceNode
+		cacheNode.SetUserServiceNode(claims.ID)
 	}
 
 	ws.ImManager.Register <- client

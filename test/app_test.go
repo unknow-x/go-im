@@ -3,7 +3,7 @@
   @data:2021/11/14
   @note
 **/
-package tests
+package test
 
 import (
 	"crypto/rand"
@@ -14,6 +14,7 @@ import (
 	"im_app/pkg/jwt"
 	"log"
 	"math/big"
+	"net/http"
 	"sync"
 	"testing"
 	"time"
@@ -37,69 +38,97 @@ type ConnMap struct {
 	client map[int]*Client
 }
 type Client struct {
+	Index int
 	Token string
 	Conn  *websocket.Conn
 	Queue chan []byte
 	Mu    sync.Mutex
 }
 
-var numbers = 50000
+var numbers = 500
+
+var appWg sync.WaitGroup
 
 func TestApp(t *testing.T) {
-
 	for i := 1; i < numbers; i++ {
-		ClientManager.start(i)
+		err := ClientManager.start(i, t)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
-	fmt.Println("5w连接存储成功:")
+	t.Logf("%d连接存储成功:", numbers)
 
 	for j := 1; j < numbers; j++ {
 
 		if conn, ok := ClientManager.client[j]; ok {
-			time.Sleep(time.Microsecond * 2)
-			wg.Add(1)
+			//time.Sleep(time.Microsecond * 2)
+			appWg.Add(1)
 			conn.Send(j)
 
 		}
 	}
 
-	wg.Wait()
-
+	appWg.Wait()
 }
 
-func (c *ConnMap) start(i int) {
+func (c *ConnMap) start(i int, t *testing.T) error {
 	name := fmt.Sprintf("测试%d", i)
 	token := jwt.GenerateToken(int64(i), name, "test", "2540463097@qq.com", 1)
 
-	u := "ws://127.0.0.1:9502/core/connect?token=" + token
-	fmt.Println(name)
-	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
+	u := fmt.Sprintf("ws://%s/im/connect?token=%s", *addr, token)
+	dialer := websocket.Dialer{
+		NetDial:           nil,
+		NetDialContext:    nil,
+		Proxy:             http.ProxyFromEnvironment,
+		TLSClientConfig:   nil,
+		HandshakeTimeout:  2 * time.Second,
+		ReadBufferSize:    0,
+		WriteBufferSize:   0,
+		WriteBufferPool:   nil,
+		Subprotocols:      nil,
+		EnableCompression: false,
+		Jar:               nil,
+	}
+	conn, _, err := dialer.Dial(u, nil)
 	if err != nil {
-		log.Fatal("dial:", err, u)
+		return err
 	}
 
 	mutexKey.Lock()
-	c.client[i] = &Client{Conn: conn, Token: token, Queue: make(chan []byte, 40)}
+	c.client[i] = &Client{Index: i, Conn: conn, Token: token, Queue: make(chan []byte, 40)}
 	mutexKey.Unlock()
-	go c.client[i].write() //执行
-
+	go c.client[i].write(t) //执行
+	return nil
 }
 
 var mutexKey sync.Mutex
 
-func (c *Client) write() {
+func (c *Client) write(t *testing.T) {
 	// 关闭socket连接
-	defer c.Conn.Close()
+	defer func(Conn *websocket.Conn) {
+		err := Conn.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		appWg.Done()
+	}(c.Conn)
 	for {
 		select {
 		case message, ok := <-c.Queue:
 			if !ok {
 				// 关闭
-				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				err := c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				if err != nil {
+					t.Fatal(err)
+				}
 				return
 			}
-			c.Mu.Lock()
-			c.Conn.WriteMessage(websocket.TextMessage, message)
-			c.Mu.Unlock()
+			//c.Mu.Lock()
+			err := c.Conn.WriteMessage(websocket.TextMessage, message)
+			if err != nil {
+				t.Fatal(err)
+			}
+			//c.Mu.Unlock()
 		}
 	}
 }
@@ -107,15 +136,14 @@ func (c *Client) write() {
 //消息推送
 func (c *Client) Send(i int) {
 
-	t_id := random()
+	tId := random()
 	data := fmt.Sprintf(`{"msg":"%s","from_id":%v,"to_id":%v,"status":0,"msg_type":%v,"channel_type":%v}`,
-		"test", i, t_id, 1, 1)
+		"test", i, tId, 1, 1)
 	//消息投递
 	c.Queue <- []byte(data)
 	c.Queue <- []byte(data)
 	c.Queue <- []byte(data)
-	c.Queue <- []byte(data)
-	c.Queue <- []byte(data)
+	close(c.Queue)
 }
 
 func random() int {
