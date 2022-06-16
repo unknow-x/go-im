@@ -7,6 +7,7 @@
 package app
 
 import (
+	"go.uber.org/zap"
 	"im_app/internal/pkg/model"
 	"im_app/internal/pkg/mq"
 	"im_app/internal/pkg/redis"
@@ -26,7 +27,10 @@ func SetupPool() {
 	// 设置每个连接的超时时间
 	sqlDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 	// 启动redis连接池
-	_ = redis.InitClient()
+	err := redis.InitClient()
+	if err != nil {
+		zap.L().Fatal("redis init error", zap.Error(err))
+	}
 	// 启动协程池
 	pool.ConnectPool()
 	// 启动mq

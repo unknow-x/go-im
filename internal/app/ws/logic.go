@@ -96,21 +96,26 @@ func MqGroupPublish(msg []byte, to_id int) {
 	return
 }
 
-// 私人消息同步消费
-func MqPersonalConsumption(conn *ImClient, user_id int64) {
+// MqPersonalConsumption 私人消息同步消费
+func MqPersonalConsumption(conn *ImClient, userId int64) {
 	ch, err := mq.RabbitMq.Channel()
 	if err != nil {
-		log.Fatal(err)
+		zaplog.Fatal("rabbit mp get channel error: %s", err)
 	}
-	defer ch.Close()
+	defer func(ch *amqp.Channel) {
+		err := ch.Close()
+		if err != nil {
+			zaplog.Error("rabbit channel close error: %s", err)
+		}
+	}(ch)
 
 	q, err := ch.QueueDeclare(
-		"personal_"+strconv.Itoa(int(user_id)), // name
-		false,                                  // durable
-		false,                                  // delete when unused
-		false,                                  // exclusive
-		false,                                  // no-wait
-		nil,                                    // arguments
+		"personal_"+strconv.Itoa(int(userId)), // name
+		false,                                 // durable
+		false,                                 // delete when unused
+		false,                                 // exclusive
+		false,                                 // no-wait
+		nil,                                   // arguments
 	)
 
 	msgs, err := ch.Consume(

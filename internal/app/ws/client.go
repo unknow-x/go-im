@@ -1,3 +1,4 @@
+// Package ws
 /**
  @author:kk
  @data:2021/11/14
@@ -54,7 +55,7 @@ type ImMessage struct {
 	ChannelType int    `json:"channel_type"`
 }
 
-// 离线和上线消息
+// OnlineMsg 离线和上线消息
 type OnlineMsg struct {
 	Code        int    `json:"code,omitempty"`
 	Msg         string `json:"msg,omitempty"`
@@ -76,17 +77,17 @@ var (
 	Clone = websocket.CloseMessage // 关闭指令
 )
 
-// 存储房间号
+// GroupId 存储房间号
 type GroupId struct {
 	UserId int64 `json:"user_id"`
 }
 
-// 根据房间号
+// GroupMap 根据房间号
 type GroupMap struct {
 	GroupIds map[int]*GroupId
 }
 
-// 消息投递
+// ImRead 消息投递
 func (c *ImClient) ImRead() {
 	defer func() {
 		ImManager.Unregister <- c
@@ -104,7 +105,7 @@ func (c *ImClient) ImRead() {
 	}
 }
 
-// 从客户端消费消息
+// ImWrite 从客户端消费消息
 func (c *ImClient) ImWrite() {
 
 	defer c.Socket.Close()

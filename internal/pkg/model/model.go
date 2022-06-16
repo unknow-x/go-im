@@ -8,6 +8,7 @@ package model
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
@@ -44,8 +45,7 @@ func ConnectDB() *gorm.DB {
 		Logger: gormlogger.Default.LogMode(gormlogger.Info),
 	})
 	if err != nil {
-		fmt.Println("Mysql 连接异常: ")
-		panic(err.Error())
+		zap.L().Fatal("db init error", zap.Error(err))
 	}
 
 	return DB

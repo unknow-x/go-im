@@ -76,8 +76,8 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 
 // 数据推送到节点
 
-func pushNodeMessage(to_id int64, msg []byte) bool {
-	ip := node.GetUserServiceNode(to_id)
+func pushNodeMessage(toId int64, msg []byte) bool {
+	ip := node.GetUserServiceNode(toId)
 	boolNumber := IsIpPort(ip)
 	if boolNumber {
 		SendRpcMsg(msg, ip)
@@ -90,10 +90,10 @@ func (manager *ImClientManager) LaunchOnlineMsg(id int64) {
 	message, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: id, ChannelType: 3})
 	for _, conn := range manager.ImClientMap {
 		zaplog.Info(string(message), conn)
-		//err := conn.Socket.WriteMessage(websocket.TextMessage, message)
-		//if err != nil {
-		//	return
-		//}
+		err := conn.Socket.WriteMessage(websocket.TextMessage, message)
+		if err != nil {
+			return
+		}
 	}
 	return
 }

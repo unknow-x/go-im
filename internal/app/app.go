@@ -8,10 +8,10 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"im_app/internal/app/router"
 	"im_app/internal/app/ws"
 	conf "im_app/pkg/config"
 	"im_app/pkg/zaplog"
-	"im_app/router"
 )
 
 var appClusterModel = conf.GetBool("core.app_cluster_model")

@@ -1,3 +1,4 @@
+// Package zaplog
 /**
   @author:kk
   @data:2021/8/16
@@ -11,7 +12,7 @@ import (
 	"runtime/debug"
 )
 
-//全局异常处理
+// Recover 全局异常处理
 func Recover(c *gin.Context) {
 	defer func() {
 		if r := recover(); r != nil {

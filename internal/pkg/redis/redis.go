@@ -9,7 +9,6 @@ package redis
 import (
 	"github.com/go-redis/redis"
 	"im_app/pkg/config"
-	"log"
 	"time"
 )
 
@@ -32,8 +31,5 @@ func InitClient() (err error) {
 	})
 	_, err = DB.Ping().Result()
 
-	if err != nil {
-		log.Println(err)
-	}
-	return nil
+	return err
 }

@@ -9,6 +9,7 @@ package ws
 import (
 	"im_app/internal/app/cache"
 	"im_app/pkg/pool"
+	"im_app/pkg/zaplog"
 	"sync"
 )
 
@@ -51,7 +52,7 @@ type ImClientHandler interface {
 	ImWrite()                          // 写消息
 }
 
-// 关于加锁的问题 可能有更好的方法 以后学会了在优化 先这样吧
+// SetClientInfo 关于加锁的问题 可能有更好的方法 以后学会了在优化 先这样吧
 func (manager *ImClientManager) SetClientInfo(conn *ImClient) {
 
 	mutexKey.Lock()
@@ -69,23 +70,28 @@ func (manager *ImClientManager) DelClient(conn *ImClient) {
 }
 
 func (manager *ImClientManager) Start() {
-
 	for {
 		select {
 		case conn := <-ImManager.Register:
 			manager.SetClientInfo(conn)      // 设置客户端信息
 			manager.LaunchOnlineMsg(conn.ID) // 用户在线下发通知
 			node.SetUserServiceNode(conn.ID) // 设置用户节点
-			pool.AntsPool.Submit(func() {
+			err := pool.AntsPool.Submit(func() {
 				MqPersonalConsumption(conn, conn.ID) //离线消息同步
 			})
+			if err != nil {
+				zaplog.Error("MqPersonalConsumption submit fail: %s", err.Error())
+			}
 		case conn := <-ImManager.Unregister:
 			PushUserOfflineNotification(manager, conn) // 设置用户离线状态
 			node.DelUserServiceNode(conn.ID)           // 删除用户节点
 		case message := <-ImManager.Broadcast:
-			pool.AntsPool.Submit(func() {
+			err := pool.AntsPool.Submit(func() {
 				manager.LaunchMessage(message) // 协程池任务调度 抢占式消息下发
 			})
+			if err != nil {
+				zaplog.Error("LaunchMessage submit fail: %s", err.Error())
+			}
 		}
 	}
 }

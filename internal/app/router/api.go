@@ -1,3 +1,4 @@
+// Package router
 /**
   @author:kk
   @data:2021/6/18
@@ -9,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"im_app/docs"
 	Auth "im_app/internal/app/http/controller/auth"
 	"im_app/internal/app/http/controller/im"
 	"im_app/internal/app/http/middleware"
@@ -29,8 +29,6 @@ func RegisterApiRoutes(router *gin.Engine) {
 	friends := new(im.FriendController)
 	maps := new(im.MapController)
 	session := new(im.SessionController)
-
-	docs.SwaggerInfo.BasePath = "/api"
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
