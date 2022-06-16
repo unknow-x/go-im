@@ -1,3 +1,4 @@
+// Package zaplog
 /**
   @author:kk
   @data:2021/8/16
@@ -28,9 +29,7 @@ type ErrorInfo struct {
 	Line         int    `json:"line"`
 }
 
-/**
-自定义日志方法
-*/
+// Warning 自定义日志方法
 func Warning(str string) {
 	timeString := time.Unix(time.Now().Unix(), 0).Format("2006-01-02")
 	fileName, line, functionName := "?", 0, "?"

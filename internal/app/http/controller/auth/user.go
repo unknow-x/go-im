@@ -1,3 +1,4 @@
+// Package auth
 /**
   @author:kk
   @data:2021/6/26
@@ -49,6 +50,7 @@ type (
 
 // @BasePath /api
 
+// GetUsersList
 // @Summary 根据昵称查询非好友用户列表
 // @Description 根据昵称查询非好友用户列表
 // @Tags 根据昵称查询非好友用户列表
@@ -80,6 +82,7 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 	return
 }
 
+// ReadMessage
 // @Summary 历史消息读取[废弃]
 // @Description 历史消息读取
 // @Tags 历史消息读取
