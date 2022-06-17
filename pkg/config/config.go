@@ -7,6 +7,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 	"os"
@@ -17,30 +18,48 @@ var Viper *viper.Viper
 type StrMap map[string]interface{}
 
 func init() {
+	// 读取默认配置
 	Viper = viper.New()
-
-	// 1. 初始化 Viper 库
-	Viper = viper.New()
-	// 2. 设置文件名称
-	Viper.SetConfigName(".env")
-	// 3. 配置类型，支持 "json", "toml", "yaml", "yml", "properties",
-	//             "props", "prop", "env", "dotenv"
-	Viper.SetConfigType("env")
-	// 4. 环境变量配置文件查找的路径，相对于 main.go
+	Viper.SetConfigName("im")
+	Viper.SetConfigType("yaml")
 	Viper.AddConfigPath(os.Getenv("GO_IM_ENV_PATH"))
-	Viper.AddConfigPath(".")
-
-	// 5. 开始读根目录下的 .env 文件，读不到会报错
+	Viper.AddConfigPath("config")
 	err := Viper.ReadInConfig()
-
 	if err != nil {
 		panic(err)
 	}
+	configs := Viper.AllSettings()
+	// 将default中的配置全部以默认配置写入
+	for k, v := range configs {
+		viper.SetDefault(k, v)
+	}
 
-	// 6. 设置环境变量前缀，用以区分 Go 的系统环境变量
+	// 读取.env获取环境配置
+	v2 := viper.New()
+	v2.SetConfigName(".env")
+	v2.SetConfigType("env")
+	if err != nil {
+		v2.Set("env", "production")
+	}
+
+	env := v2.GetString("env")
+	// 根据配置的env读取相应的配置信息
+	if env != "" {
+		viper.SetConfigName(env)
+		viper.SetConfigType("yaml")
+		viper.AddConfigPath("config")
+		err = viper.ReadInConfig()
+		if err != nil {
+			return
+		}
+	}
+	// 设置环境变量前缀，用以区分 Go 的系统环境变量
 	Viper.SetEnvPrefix("appenv")
-	// 7. Viper.Get() 时，优先读取环境变量
+	// Viper.Get() 时，优先读取环境变量
 	Viper.AutomaticEnv()
+
+	fmt.Println(Viper.AllSettings())
+	os.Exit(0)
 }
 
 // Env 读取环境变量，支持默认值

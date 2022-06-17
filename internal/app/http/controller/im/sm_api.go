@@ -1,3 +1,4 @@
+// Package im
 /**
   @author:kk
   @data:2021/8/10
@@ -89,6 +90,7 @@ func (*SmApiController) GetApiToken(cxt *gin.Context) {
 
 // @BasePath /api
 
+// UploadImg
 // @Summary 图片上传接口
 // @Description 图片上传接口
 // @Tags 图片上传接口

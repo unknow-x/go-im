@@ -1,0 +1,70 @@
+core:
+  name: GoIm
+  ym: ""
+  go_coroutines: 0
+  node: 0
+  env: production
+  file_disk: file
+  port: 9502
+  grpc_port: 8001
+  tcp_port: 8000
+  swagger_port: 8080
+  log_address: ""
+  gitee_api_key: ""
+  gaode_key: ""
+  jwt:
+    sign_key: ""
+    expiration_time: 0
+  base64: ""
+  sm_name: ""
+  sm_password: ""
+  sm_token: ""
+  app_yp_id: ""
+  app_yp_key: ""
+  app_yp_secret_key: ""
+  app_yp_sign_key: ""
+  app_cluster_model: false
+
+cache:
+  redis:
+    addr: 127.0.0.1
+    port: 6379
+    password: ""
+    db: 0
+
+database:
+  mysql:
+    host: "127.0.0.1"
+    port: "3306"
+    database: "test"
+    username: ""
+    password: ""
+    charset: "utf8mb4"
+    loc: "Asia/Shanghai"
+    max_idle_connections: 300
+    max_open_connections: 25
+    max_life_seconds: 300
+
+mail:
+  driver: ""
+  host: ""
+  port: 0
+  name: ""
+  password: ""
+  encryption: ""
+  address: ""
+  from_name: ""
+
+oauth:
+  wb_client_id: ""
+  wb_client_secret: ""
+  wb_redirect_uri: ""
+  ge_client_id: ""
+  ge_client_secret: ""
+  ge_redirect_uri: ""
+
+rabbitmp:
+  host: "localhost"
+  port: 5672
+  user: guest
+  password: guest
