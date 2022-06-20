@@ -9,7 +9,7 @@ package jwt
 import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"im_app/pkg/config"
+	"im_app/config"
 	"im_app/pkg/zaplog"
 	"time"
 )
@@ -21,11 +21,11 @@ type JWT struct {
 
 // 一些常量
 var (
-	TokenExpired     error  = errors.New("Token is expired")
-	TokenNotValidYet error  = errors.New("Token not active yet")
-	TokenMalformed   error  = errors.New("That's not even a token")
-	TokenInvalid     error  = errors.New("Couldn't handle this token:")
-	SignKey          string = config.GetString("core.jwt.sign_key")
+	TokenExpired     = errors.New("Token is expired")
+	TokenNotValidYet = errors.New("Token not active yet")
+	TokenMalformed   = errors.New("That's not even a token")
+	TokenInvalid     = errors.New("Couldn't handle this token:")
+	SignKey          = ""
 )
 
 // CustomClaims 载荷，可以加一些自己需要的信息
@@ -46,7 +46,7 @@ func NewJWT() *JWT {
 
 // GetSignKey 获取signKey
 func GetSignKey() string {
-	return SignKey
+	return config.Conf.Jwt.SignKey
 
 }
 
@@ -65,8 +65,8 @@ func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
 }
 
 func GenerateToken(uid int64, Name string, avatar string, email string, ClientType int) (token string) {
-	signKey := config.GetString("core.jwt.sign_key")
-	expirationTime := config.GetInt64("core.jwt.expiration_time")
+	signKey := config.Conf.Jwt.SignKey
+	expirationTime := config.Conf.Jwt.ExpirationTime
 	j := &JWT{
 		[]byte(signKey),
 	}

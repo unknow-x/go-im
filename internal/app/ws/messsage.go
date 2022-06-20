@@ -1,3 +1,4 @@
+// Package ws
 /**
   @author:kk
   @data:2021/11/18
@@ -9,12 +10,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"im_app/pkg/config"
+	"im_app/config"
 	"im_app/pkg/wordsfilter"
 	"im_app/pkg/zaplog"
 )
-
-var appClusterModel = config.GetBool("core.app_cluster_model")
 
 //type Msg struct {
 //	Code        int    `json:"code,omitempty"`
@@ -26,13 +25,13 @@ var appClusterModel = config.GetBool("core.app_cluster_model")
 //	ChannelType int    `json:"channel_type"`
 //}
 
-// 外部消息消息投递
+// SystemMessageDelivery 外部消息消息投递
 func (manager *ImClientManager) SystemMessageDelivery(id int64, msg *Msg) {
 	messageByte, _ := json.Marshal(&Message{Sender: id, Mes: msg})
 	manager.Broadcast <- messageByte
 }
 
-// 消息投递下发
+// LaunchMessage 消息投递下发
 func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 	// 消息传输协议可以优化 可以使用自定义二进制协议
 	// json传输协议 格式转换比较消耗性能
@@ -48,7 +47,7 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 			conn.Send <- msg
 		} else {
 			// 支持集群
-			if appClusterModel == true {
+			if config.Conf.AppClusterModel == true {
 				boolNumber := pushNodeMessage(int64(message.Mes.ToId), msg)
 				if !boolNumber {
 					// 离线消息入库
@@ -132,7 +131,6 @@ func (c *ImClient) PullMessageHandler(message []byte) {
 	return
 }
 
-//
 func LaunchTicklingAckMsg(msg []byte, conn *ImClient) {
 	conn.Socket.WriteMessage(websocket.TextMessage, msg)
 	return

@@ -1,3 +1,4 @@
+// Package utils
 /**
   @author:kk
   @data:2021/9/4
@@ -14,17 +15,14 @@ import (
 
 	"github.com/tidwall/gjson"
 
-	"im_app/pkg/config"
+	"im_app/config"
 	"im_app/pkg/helpler"
 )
 
 var (
-	client_id        = config.GetString("oauth.wb_client_id")
-	client_secret    = config.GetString("oauth.wb_client_secret")
-	redirect_uri     = config.GetString("oauth.wb_redirect_uri")
-	access_token_url = "https://api.weibo.com/oauth2/access_token"
-	user_info_url    = "https://api.weibo.com/2/users/show.json"
-	get_token_info   = "https://api.weibo.com/oauth2/get_token_info"
+	accessTokenUrl = "https://api.weibo.com/oauth2/access_token"
+	userInfoUrl    = "https://api.weibo.com/2/users/show.json"
+	getTokenInfo   = "https://api.weibo.com/oauth2/get_token_info"
 )
 
 // Result represents a json value that is returned from GetUserInfo().
@@ -40,13 +38,13 @@ type UserInfo struct {
 // GetAccessToken function string returns an string access_token.str
 
 func GetWeiBoAccessToken(code *string) string {
-	queryData := url.Values{"client_id": {client_id},
+	queryData := url.Values{"client_id": {config.Conf.WbClientId},
 		"code":          {*code},
-		"client_secret": {client_secret},
-		"redirect_uri":  {redirect_uri},
+		"client_secret": {config.Conf.WbClientSecret},
+		"redirect_uri":  {config.Conf.WbRedirectUri},
 		"grant_type":    {"authorization_code"}}
 
-	urls := access_token_url + "?" + helpler.HttpBuildQuery(queryData)
+	urls := accessTokenUrl + "?" + helpler.HttpBuildQuery(queryData)
 
 	data := url.Values{}
 	body := strings.NewReader(data.Encode())
@@ -69,7 +67,7 @@ func GetWeiBoUserInfo(access_token *string) string {
 
 	uid := getUid(&*access_token)
 
-	urls := user_info_url + "?uid=" + uid + "&access_token=" + *access_token
+	urls := userInfoUrl + "?uid=" + uid + "&access_token=" + *access_token
 	resp, err := http.Get(urls)
 	if err != nil {
 		log.Fatal(err)
@@ -83,8 +81,8 @@ func GetWeiBoUserInfo(access_token *string) string {
 }
 
 // get uid
-func getUid(access_token *string) string {
-	urls := get_token_info + "?access_token=" + *access_token
+func getUid(accessToken *string) string {
+	urls := getTokenInfo + "?access_token=" + *accessToken
 	data := url.Values{}
 	body := strings.NewReader(data.Encode())
 	resp, err := http.Post(urls, "application/x-www-form-urlencoded", body)

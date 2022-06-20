@@ -9,7 +9,7 @@ core:
   grpc_port: 8001
   tcp_port: 8000
   swagger_port: 8080
-  log_address: ""
+  log_address: "logs/"
   gitee_api_key: ""
   gaode_key: ""
   jwt:
@@ -58,7 +58,7 @@ mail:
 oauth:
   wb_client_id: ""
   wb_client_secret: ""
-  wb_redirect_uri: ""
+  wb_redirect_uri: "http://im.pltrue.top/login"
   ge_client_id: ""
   ge_client_secret: ""
   ge_redirect_uri: ""

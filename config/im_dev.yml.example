@@ -1,0 +1,11 @@
+core:
+  log_address: "logs/"
+
+database:
+  mysql:
+    database: "im"
+    username: "root"
+    password: "oknmlp"
+
+oauth:
+  wb_client_id: "1111"

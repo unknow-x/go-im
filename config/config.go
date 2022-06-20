@@ -6,6 +6,21 @@
 **/
 package config
 
+import (
+	"im_app/pkg/config"
+)
+
+type ConfST struct {
+	Core
+	Cache
+	Database DatabaseST
+	Mail
+	Oauth
+	Rabbitmp
+}
+
+var Conf = ConfST{}
+
 func Initialize() {
-	// 触发加载本目录下其他文件中的 init 方法
+	config.Initialize(&Conf)
 }

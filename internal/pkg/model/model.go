@@ -12,7 +12,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
-	"im_app/pkg/config"
+	"im_app/config"
+	"runtime"
 )
 
 var DB *gorm.DB
@@ -23,18 +24,19 @@ type BaseModel struct {
 
 // ConnectDB 初始化 grom
 func ConnectDB() *gorm.DB {
+	fmt.Println(runtime.Caller(2))
 	var (
-		host     = config.GetString("database.mysql.host")
-		port     = config.GetString("database.mysql.port")
-		database = config.GetString("database.mysql.database")
-		username = config.GetString("database.mysql.username")
-		password = config.GetString("database.mysql.password")
-		charset  = config.GetString("database.mysql.charset")
-		//loc  = config.GetString("database.mysql.loc")
+		host     = config.Conf.Database.Host
+		port     = config.Conf.Database.Port
+		database = config.Conf.Database.Database
+		username = config.Conf.Database.Username
+		password = config.Conf.Database.Password
+		charset  = config.Conf.Database.Charset
+		//loc  = config.Conf.Database.Loc
 		err error
 	)
 	//&parseTime=True
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s",
 		username, password, host, port, database, charset)
 
 	//dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=%t&loc=%s",

@@ -8,3 +8,5 @@ gin.log
 .tellme.yaml
 tellme
 imd
+im_*.yml
+go.sum

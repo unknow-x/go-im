@@ -25,10 +25,10 @@ import (
 	"log"
 )
 
-func init() {
+func bootstrap() {
 	config.Initialize()
 	wordsfilter.SetTexts()
-	zaplog.InitZapLogger()
+	zaplog.InitZapLogger(config.Conf.LogAddress)
 }
 
 // @title go-im  接口文档
@@ -46,6 +46,8 @@ func init() {
 // @BasePath /api
 
 func main() {
+	bootstrap()
+
 	var serve string
 	flag.StringVar(&serve, "serve", "http", "选择运行的服务🚀")
 	flag.Parse()

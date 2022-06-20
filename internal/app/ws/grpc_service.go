@@ -1,3 +1,4 @@
+// Package ws
 /**
   @author:kk
   @data:2021/11/9
@@ -10,11 +11,12 @@ import (
 	"encoding/json"
 	"google.golang.org/grpc"
 	"im_app/api/protobuf-spec/im"
-	conf "im_app/pkg/config"
+	conf "im_app/config"
 	"im_app/pkg/zaplog"
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 )
 
 var RpcServer = grpc.NewServer()
@@ -31,7 +33,7 @@ func StartRpc() {
 
 	im.RegisterImRpcServiceServer(RpcServer, new(ImRpcServer))
 
-	listener, err := net.Listen("tcp", ":"+conf.GetString("core.grpc_port"))
+	listener, err := net.Listen("tcp", ":"+strconv.Itoa(conf.Conf.GrpcPort))
 	if err != nil {
 		log.Fatal("服务监听端口失败", err)
 	}

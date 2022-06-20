@@ -8,8 +8,9 @@ package mq
 
 import (
 	"github.com/streadway/amqp"
-	"im_app/pkg/config"
+	"im_app/config"
 	"log"
+	"strconv"
 )
 
 var RabbitMq *amqp.Connection
@@ -17,10 +18,10 @@ var err error
 
 // ConnectMQ 加载mq
 func ConnectMQ() *amqp.Connection {
-	RabbitMq, err = amqp.Dial("amqp://" + config.GetString("rabbitmq.user") + ":" +
-		config.GetString("rabbitmq.password") + "@" +
-		config.GetString("rabbitmq.host") + ":" +
-		config.GetString("rabbitmq.port") + "/")
+	RabbitMq, err = amqp.Dial("amqp://" + config.Conf.Rabbitmp.User + ":" +
+		config.Conf.Rabbitmp.Password + "@" +
+		config.Conf.Rabbitmp.Host + ":" +
+		strconv.Itoa(config.Conf.Rabbitmp.Port) + "/")
 	if err != nil {
 		log.Fatal("rabbitmq连接失败")
 	}

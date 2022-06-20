@@ -8,112 +8,72 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/cast"
+	"github.com/fsnotify/fsnotify"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"os"
 )
 
-var Viper *viper.Viper
+func Initialize(conf interface{}) {
+	configFile := "im"
+	configType := "yaml"
 
-type StrMap map[string]interface{}
-
-func init() {
 	// 读取默认配置
-	Viper = viper.New()
-	Viper.SetConfigName("im")
-	Viper.SetConfigType("yaml")
-	Viper.AddConfigPath(os.Getenv("GO_IM_ENV_PATH"))
-	Viper.AddConfigPath("config")
-	err := Viper.ReadInConfig()
+	v1 := viper.New()
+	v1.SetConfigName(configFile)
+	v1.SetConfigType(configType)
+	v1.AddConfigPath(os.Getenv("GO_IM_CONFIG_PATH"))
+	v1.AddConfigPath("config")
+	err := v1.ReadInConfig()
 	if err != nil {
-		panic(err)
+		zap.L().Fatal("load default config error", zap.Error(err))
 	}
-	configs := Viper.AllSettings()
-	// 将default中的配置全部以默认配置写入
+	configs := v1.AllSettings()
+	// 将默认配置全部以默认值写入
 	for k, v := range configs {
 		viper.SetDefault(k, v)
 	}
 
-	// 读取.env获取环境配置
-	v2 := viper.New()
-	v2.SetConfigName(".env")
-	v2.SetConfigType("env")
-	if err != nil {
-		v2.Set("env", "production")
-	}
-
-	env := v2.GetString("env")
-	// 根据配置的env读取相应的配置信息
-	if env != "" {
-		viper.SetConfigName(env)
-		viper.SetConfigType("yaml")
-		viper.AddConfigPath("config")
-		err = viper.ReadInConfig()
-		if err != nil {
-			return
-		}
-	}
 	// 设置环境变量前缀，用以区分 Go 的系统环境变量
-	Viper.SetEnvPrefix("appenv")
-	// Viper.Get() 时，优先读取环境变量
-	Viper.AutomaticEnv()
+	viper.SetEnvPrefix("goimenv")
+	viper.AutomaticEnv()
 
-	fmt.Println(Viper.AllSettings())
-	os.Exit(0)
-}
-
-// Env 读取环境变量，支持默认值
-func Env(envName string, defaultValue ...interface{}) interface{} {
-	if len(defaultValue) > 0 {
-		return Get(envName, defaultValue[0])
+	// 读取环境覆盖配置
+	mode := viper.GetString("mode")
+	if mode != "" {
+		configFile += "_" + mode
 	}
-	return Get(envName)
-}
-
-// Add 新增配置项
-func Add(name string, configuration map[string]interface{}) {
-	Viper.Set(name, configuration)
-}
-
-// Get 获取配置项，允许使用点式获取，如：core.name
-func Get(path string, defaultValue ...interface{}) interface{} {
-	// 不存在的情况
-	if !Viper.IsSet(path) {
-		if len(defaultValue) > 0 {
-			return defaultValue[0]
+	viper.SetConfigName(configFile)
+	viper.SetConfigType(configType)
+	viper.AddConfigPath(".")
+	viper.AddConfigPath(os.Getenv("GO_IM_CONFIG_PATH"))
+	viper.AddConfigPath("config")
+	hDir, err := homedir.Dir()
+	if err != nil {
+		zap.L().Fatal("fetch user homedir error", zap.Error(err))
+	}
+	viper.AddConfigPath(hDir)
+	err = viper.ReadInConfig()
+	if err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			zap.L().Fatal("load env config error", zap.Error(err))
 		}
-		return nil
 	}
-	return Viper.Get(path)
-}
 
-// GetString 获取 String 类型的配置信息
-func GetString(path string, defaultValue ...interface{}) string {
-	return cast.ToString(Get(path, defaultValue...))
-}
+	// 配置写入结构体
+	if conf != nil {
+		if err := viper.Unmarshal(&conf); err != nil {
+			zap.L().Fatal("unmarshal conf failed", zap.Error(err))
+		}
 
-// GetInt 获取 Int 类型的配置信息
-func GetInt(path string, defaultValue ...interface{}) int {
-	return cast.ToInt(Get(path, defaultValue...))
-}
-
-// GetInt64 获取 Int64 类型的配置信息
-func GetInt64(path string, defaultValue ...interface{}) int64 {
-	return cast.ToInt64(Get(path, defaultValue...))
-}
-
-// GetInt32 获取 Int64 类型的配置信息
-func GetInt32(path string, defaultValue ...interface{}) int32 {
-	return cast.ToInt32(Get(path, defaultValue...))
-}
-
-// GetUint 获取 Uint 类型的配置信息
-func GetUint(path string, defaultValue ...interface{}) uint {
-	return cast.ToUint(Get(path, defaultValue...))
-}
-
-// GetBool 获取 Bool 类型的配置信息
-func GetBool(path string, defaultValue ...interface{}) bool {
-	return cast.ToBool(Get(path, defaultValue...))
-
+		// 监控配置文件变化
+		viper.WatchConfig()
+		viper.OnConfigChange(func(in fsnotify.Event) {
+			fmt.Println("夭寿啦~配置文件被人修改啦...")
+			if err := viper.Unmarshal(&conf); err != nil {
+				zap.L().Panic("re unmarshal conf failed", zap.Error(err))
+			}
+		})
+	}
 }

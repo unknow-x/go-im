@@ -8,13 +8,11 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	conf "im_app/config"
 	"im_app/internal/app/router"
 	"im_app/internal/app/ws"
-	conf "im_app/pkg/config"
 	"im_app/pkg/zaplog"
 )
-
-var appClusterModel = conf.GetBool("core.app_cluster_model")
 
 func StartHttp() {
 
@@ -24,7 +22,7 @@ func StartHttp() {
 
 	go ws.ImManager.Start()
 
-	if appClusterModel == true {
+	if conf.Conf.AppClusterModel == true {
 		go ws.StartRpc()
 	}
 
@@ -33,6 +31,6 @@ func StartHttp() {
 
 	app.Use(zaplog.Recover)
 
-	_ = app.Run(":" + conf.GetString("core.port"))
+	_ = app.Run(":" + string(conf.Conf.Core.Port))
 
 }

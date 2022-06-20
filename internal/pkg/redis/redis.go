@@ -8,7 +8,8 @@ package redis
 
 import (
 	"github.com/go-redis/redis"
-	"im_app/pkg/config"
+	"im_app/config"
+	"strconv"
 	"time"
 )
 
@@ -19,9 +20,9 @@ func InitClient() (err error) {
 
 	DB = redis.NewClient(&redis.Options{
 		Network:      "tcp",
-		Addr:         config.GetString("cache.redis.addr") + ":" + config.GetString("cache.redis.port"),
-		Password:     config.GetString("cache.redis.password"),
-		DB:           config.GetInt("cache.redis.db", 0),
+		Addr:         config.Conf.Cache.Redis.Addr + ":" + strconv.Itoa(config.Conf.Cache.Redis.Port),
+		Password:     config.Conf.Cache.Redis.Password,
+		DB:           config.Conf.Cache.Redis.DB,
 		PoolSize:     15, //连接池 默认为4倍cpu数
 		MinIdleConns: 10, //在启动阶段创建指定数量的Idle连接，并长期维持idle状态的连接数不少于指定数量
 		DialTimeout:  5 * time.Second,

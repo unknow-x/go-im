@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+	"im_app/config"
 	"im_app/internal/app/http/controller"
 	"im_app/internal/app/http/models/friend"
 	userModel "im_app/internal/app/http/models/user"
@@ -19,7 +20,6 @@ import (
 	"im_app/internal/app/ws"
 	"im_app/internal/pkg/model"
 	"im_app/internal/pkg/redis"
-	"im_app/pkg/config"
 	"im_app/pkg/helpler"
 	"im_app/pkg/jwt"
 	"im_app/pkg/response"
@@ -451,14 +451,14 @@ func (*AuthController) WxCallback(c *gin.Context) {
 }
 
 func getMe(token string, user *userModel.Users) *Me {
-	expiration_time := config.GetInt64("core.jwt.expiration_time")
+	expirationTime := config.Conf.Jwt.ExpirationTime
 	data := new(Me)
 	data.ID = user.ID
 	data.Name = user.Name
 	data.Avatar = user.Avatar
 	data.Email = user.Email
 	data.Token = token
-	data.ExpirationTime = expiration_time
+	data.ExpirationTime = expirationTime
 	data.Bio = user.Bio
 	data.Sex = user.Sex
 	data.ClientType = user.ClientType

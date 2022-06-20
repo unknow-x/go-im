@@ -9,9 +9,9 @@ package im
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"im_app/config"
 	"im_app/internal/app/utils"
 	"im_app/internal/pkg/redis"
-	"im_app/pkg/config"
 	"im_app/pkg/response"
 	log2 "im_app/pkg/zaplog"
 	"io/ioutil"
@@ -55,10 +55,6 @@ type (
 	}
 )
 
-var username = config.GetString("core.sm_name")
-var password = config.GetString("core.sm_password")
-var sm_token = config.GetString("core.sm_token")
-
 func (*SmApiController) GetApiToken(cxt *gin.Context) {
 	stringCmd := redis.DB.Get("sm_token")
 	if len(stringCmd.Val()) != 0 {
@@ -71,7 +67,7 @@ func (*SmApiController) GetApiToken(cxt *gin.Context) {
 		response.SuccessResponse(resp).ToJson(cxt)
 		return
 	}
-	data := url.Values{"username": {username}, "password": {password}}
+	data := url.Values{"username": {config.Conf.SmName}, "password": {config.Conf.SmPassword}}
 	j, err := http.PostForm("https://sm.ms/api/v2/token", data)
 	log2.Warning(err.Error())
 	defer j.Body.Close()
@@ -111,7 +107,7 @@ func (*SmApiController) UploadImg(cxt *gin.Context) {
 	log2.LogError(err)
 	header := new(utils.Header)
 	header.Authorization = "Authorization"
-	header.Token = sm_token
+	header.Token = config.Conf.SmToken
 	resp, err := utils.PostFile(path, "https://sm.ms/api/v2/upload", header)
 	log2.LogError(err)
 	bodyC, _ := ioutil.ReadAll(resp.Body)

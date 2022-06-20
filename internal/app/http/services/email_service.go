@@ -1,3 +1,4 @@
+// Package services
 /**
   @author:kk
   @data:2021/12/5
@@ -8,25 +9,18 @@ package services
 import (
 	"crypto/tls"
 	"fmt"
-	"im_app/pkg/config"
+	"im_app/config"
 	"log"
 	"net"
 	"net/smtp"
 )
 
-var (
-	host     = config.GetString("mail.host")
-	name     = config.GetString("mail.name")
-	password = config.GetString("mail.password")
-	port     = config.GetInt("mail.port")
-)
-
 type EmailServiceHandler interface {
 
-	// 发送邮件方法
+	// SendEmail 发送邮件方法
 	SendEmail(to string, subject string, body string) error
 
-	// 获取html模版内容
+	// GetHtmlTemplate 获取html模版内容
 	GetHtmlTemplate(text string) []byte
 }
 
@@ -36,7 +30,7 @@ func (s EmailService) SendEmail(to string, subject string, body string) error {
 
 	header := make(map[string]string)
 
-	header["From"] = "GO-IM:" + "<" + name + ">"
+	header["From"] = "GO-IM:" + "<" + config.Conf.Mail.Name + ">"
 	header["To"] = to
 	header["Subject"] = subject
 	header["Content-Type"] = "text/html;chartset=UTF-8"
@@ -51,14 +45,14 @@ func (s EmailService) SendEmail(to string, subject string, body string) error {
 
 	auth := smtp.PlainAuth(
 		"",
-		name,
-		password,
-		host,
+		config.Conf.Mail.Name,
+		config.Conf.Mail.Password,
+		config.Conf.Mail.Host,
 	)
 	err := sendMailUsingTLS(
-		fmt.Sprintf("%s:%d", host, port),
+		fmt.Sprintf("%s:%d", config.Conf.Mail.Host, config.Conf.Mail.Port),
 		auth,
-		name,
+		config.Conf.Mail.Name,
 		[]string{to},
 		[]byte(message),
 	)

@@ -1,0 +1,13 @@
+core:
+  log_address: "logs/"
+
+database:
+  mysql:
+    host: "127.0.0.1"
+    port: "3306"
+    database: "im"
+    username: "root"
+    password: "oknmlp"
+
+oauth:
+  wb_client_id: "1111"

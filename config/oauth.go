@@ -1,3 +1,4 @@
+// Package config
 /**
   @author:kk
   @data:2021/6/18
@@ -5,18 +6,11 @@
 **/
 package config
 
-import "im_app/pkg/config"
-
-func init() {
-	config.Add("oauth", config.StrMap{
-		//weibo
-		"wb_client_id": config.Env("WEIBO_CLIENT_ID", ""),
-
-		"wb_client_secret": config.Env("WEIBO_CLIENT_SECRET", ""),
-		"wb_redirect_uri":  config.Env("WEIBO_REDIRECT_URI", ""),
-		//gitee
-		"ge_client_id":     config.Env("GITHUB_CLIENT_ID", ""),
-		"ge_client_secret": config.Env("GITHUB_CALLBACK", ""),
-		"ge_redirect_uri":  config.Env("GITHUB_SECRET", ""),
-	})
+type Oauth struct {
+	WbClientId     string `mapstructure:"wb_client_id"`
+	WbClientSecret string `mapstructure:"wb_client_secret"`
+	WbRedirectUri  string `mapstructure:"wb_redirect_uri"`
+	GeClientId     string `mapstructure:"ge_client_id"`
+	GeClientSecret string `mapstructure:"ge_client_secret"`
+	GeRedirectUri  string `mapstructure:"ge_redirect_uri"`
 }

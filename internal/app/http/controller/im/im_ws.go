@@ -8,16 +8,14 @@ package im
 
 import (
 	"github.com/gin-gonic/gin"
+	"im_app/config"
 	"im_app/internal/app/cache"
 	"im_app/internal/app/ws"
-	"im_app/pkg/config"
 	"im_app/pkg/jwt"
 	ws2 "im_app/pkg/ws"
 	"net/http"
 	"time"
 )
-
-var appClusterModel = config.GetBool("core.app_cluster_model")
 
 type IMService struct{}
 
@@ -32,7 +30,7 @@ func (*IMService) Connect(c *gin.Context) {
 	//&ws.Devices{Socket: conn}
 	client := &ws.ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
 
-	if appClusterModel {
+	if config.Conf.AppClusterModel {
 		var cacheNode cache.ServiceNode
 		cacheNode.SetUserServiceNode(claims.ID)
 	}

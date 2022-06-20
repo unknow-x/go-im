@@ -11,13 +11,14 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 
-	"im_app/pkg/config"
+	"im_app/config"
 	"im_app/pkg/pool"
 )
 
 func StartTcpClient() {
-	tcpAddr, err := net.ResolveTCPAddr("tcp", ":"+config.GetString("core.tcp_port"))
+	tcpAddr, err := net.ResolveTCPAddr("tcp", ":"+strconv.Itoa(config.Conf.TcpPort))
 	if err != nil {
 		log.Fatal(err)
 	}

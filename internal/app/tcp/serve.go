@@ -1,3 +1,4 @@
+// Package tcp
 /**
   @author:kk
   @data:2021/9/26
@@ -8,15 +9,16 @@ package tcp
 import (
 	"bufio"
 	"fmt"
+	"im_app/internal/app"
 	"log"
 	"net"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
-	"im_app/internal/app"
+	"im_app/config"
 	"im_app/internal/app/service"
-	"im_app/pkg/config"
 	NewJwt "im_app/pkg/jwt"
 	"im_app/pkg/pool"
 )
@@ -30,7 +32,7 @@ type TcpClient struct {
 // 客户端集合
 type client chan<- string
 
-// Client manager
+// TcpClientManager Client manager
 type TcpClientManager struct {
 	ClientMap map[int64]*TcpClient
 	ch        chan string
@@ -46,13 +48,11 @@ var (
 	messages = make(chan string)    // 所有接受的客户消息
 )
 
-func init() {
+func StartTcpServe() {
 	// 加载池
 	app.SetupPool()
-}
 
-func StartTcpServe() {
-	listener, err := net.Listen("tcp", ":"+config.GetString("core.tcp_port"))
+	listener, err := net.Listen("tcp", ":"+strconv.Itoa(config.Conf.TcpPort))
 	if err != nil {
 		log.Fatal(err)
 	}

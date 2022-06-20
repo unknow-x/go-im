@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"im_app/pkg/config"
 	"im_app/pkg/helpler"
 )
 
@@ -19,10 +18,10 @@ var (
 	sugar *zap.SugaredLogger
 )
 
-func InitZapLogger() {
+func InitZapLogger(logAddress string) {
 	cfg := zap.NewDevelopmentConfig()
 	cfg.OutputPaths = []string{
-		fmt.Sprintf("%slog_%s.zaplog", config.GetString("core.log_address"), helpler.GetNowFormatTodayTime()),
+		fmt.Sprintf("%slog_%s.zaplog", logAddress, helpler.GetNowFormatTodayTime()),
 		"stdout",
 	}
 

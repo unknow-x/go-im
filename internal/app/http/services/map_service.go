@@ -1,3 +1,4 @@
+// Package services
 /**
   @author:kk
   @data:2021/12/11
@@ -8,7 +9,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"im_app/pkg/config"
+	"im_app/config"
 	"im_app/pkg/helpler"
 	"io/ioutil"
 	"log"
@@ -16,8 +17,7 @@ import (
 	"net/url"
 )
 
-var key = config.GetString("app.gaode_key")
-var api_url = "https://restapi.amap.com/v3/ip"
+var apiUrl = "https://restapi.amap.com/v3/ip"
 
 type MapService struct{}
 
@@ -33,13 +33,13 @@ type Result struct {
 
 func (*MapService) GetLongitude(ip string) *Result {
 
-	queryData := url.Values{"client_id": {client_id},
-		"key":  {key},
+	queryData := url.Values{"client_id": {config.Conf.Oauth.WbClientId},
+		"key":  {config.Conf.GaodeKey},
 		"type": {"4"},
 		"ip":   {ip},
 	}
 
-	urls := api_url + "?" + helpler.HttpBuildQuery(queryData)
+	urls := apiUrl + "?" + helpler.HttpBuildQuery(queryData)
 
 	resp, err := http.Get(urls)
 

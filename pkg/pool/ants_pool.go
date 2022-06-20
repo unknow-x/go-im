@@ -8,13 +8,13 @@ package pool
 
 import (
 	"github.com/panjf2000/ants/v2"
-	"im_app/pkg/config"
+	"im_app/config"
 )
 
 var AntsPool *ants.Pool
 
 func ConnectPool() *ants.Pool {
 	//设置数量
-	AntsPool, _ = ants.NewPool(config.GetInt("core.go_coroutines"))
+	AntsPool, _ = ants.NewPool(config.Conf.GoCoroutines)
 	return AntsPool
 }

@@ -1,3 +1,4 @@
+// Package im
 /**
   @author:kk
   @data:2021/8/12
@@ -7,17 +8,16 @@ package im
 
 import (
 	"github.com/gin-gonic/gin"
+	"im_app/config"
 	"im_app/internal/app/utils"
-	"im_app/pkg/config"
 	"im_app/pkg/response"
 )
 
 type UploadController struct{}
 
-var ym = config.GetString("core.ym")
-
 // @BasePath /api
 
+// UploadVoiceFile
 // @Summary 音频文件上传接口
 // @Description 音频文件上传接口
 // @Tags 音频文件上传接口
@@ -36,7 +36,7 @@ func (*UploadController) UploadVoiceFile(cxt *gin.Context) {
 	path := dir + "/voice/" + voice.Filename
 	cxt.SaveUploadedFile(voice, path)
 	response.SuccessResponse(map[string]interface{}{
-		"url": ym + "voice/" + voice.Filename,
+		"url": config.Conf.Ym + "voice/" + voice.Filename,
 	}).ToJson(cxt)
 	return
 }
